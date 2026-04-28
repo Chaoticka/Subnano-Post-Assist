@@ -14,6 +14,7 @@ import { createSubnanoDraft, patchSubnanoPost, publishSubnanoPost, uploadSubnano
 
 type ViewType = 'login' | 'banner' | 'editor' | 'published' | 'faq' | 'swap';
 
+export const maxDuration = 60; // Set timeout to 60 seconds
 export default function Home() {
   const [currentView, setCurrentView] = useState<ViewType>('editor');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);

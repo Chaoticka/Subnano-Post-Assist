@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
   // Allow access to remote image placeholder.
   images: {
     remotePatterns: [
