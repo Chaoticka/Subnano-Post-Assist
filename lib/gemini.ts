@@ -1,6 +1,8 @@
+"use server";
+
 export async function generateArticleContent(sourceMaterial: string, apiKey?: string) {
   const { GoogleGenAI, Type } = await import('@google/genai');
-  const ai = new GoogleGenAI({ apiKey: apiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+  const ai = new GoogleGenAI({ apiKey: apiKey || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY });
   
   const response = await ai.models.generateContent({
     model: 'gemini-3.1-pro-preview',
@@ -38,7 +40,7 @@ Use Markdown format.`,
 
 export async function generateBanneri2i(sourceMaterial: string, baseImageBase64: string, apiKey?: string) {
   const { GoogleGenAI } = await import('@google/genai');
-  const ai = new GoogleGenAI({ apiKey: apiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+  const ai = new GoogleGenAI({ apiKey: apiKey || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY });
   
   // Extract MIME type from base64 data url
   const mimeType = baseImageBase64.split(',')[0].split(':')[1].split(';')[0];
