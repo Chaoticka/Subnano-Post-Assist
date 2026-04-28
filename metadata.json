@@ -1,0 +1,6 @@
+{
+  "name": "Subnano Post Generator",
+  "description": "Generate Subnano.me articles and banners using Gemini API with Image-to-Image capabilities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
