@@ -20,6 +20,7 @@ export default function Home() {
   const [hasMounted, setHasMounted] = useState(false);
 
   const [subnanoApiKey, setSubnanoApiKey] = useState("");
+  const [geminiApiKey, setGeminiApiKey] = useState("");
   const [templateImage, setTemplateImage] = useState<string | null>(null);
   
   const [sourceMaterial, setSourceMaterial] = useState("");
@@ -36,13 +37,18 @@ export default function Home() {
 
   useEffect(() => {
     setHasMounted(true);
-    const savedKey = localStorage.getItem("subnano_api_key");
-    if (savedKey) {
+    const savedSubnanoKey = localStorage.getItem("subnano_api_key");
+    const savedGeminiKey = localStorage.getItem("gemini_api_key");
+    if (savedSubnanoKey) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSubnanoApiKey(savedKey);
+      setSubnanoApiKey(savedSubnanoKey);
     } else {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentView('login');
+    }
+    if (savedGeminiKey) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setGeminiApiKey(savedGeminiKey);
     }
 
     getTemplateImage().then((img) => {
@@ -55,7 +61,8 @@ export default function Home() {
 
   const handleSaveSettings = async () => {
     localStorage.setItem("subnano_api_key", subnanoApiKey);
-    toast.success("API Key saved successfully.");
+    localStorage.setItem("gemini_api_key", geminiApiKey);
+    toast.success("API Keys saved successfully.");
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +102,7 @@ export default function Home() {
     }
     setIsGenerating(true);
     try {
-      const data = await generateArticleContent(sourceMaterial);
+      const data = await generateArticleContent(sourceMaterial, geminiApiKey);
       if (data) {
         setPostTitle(data.title || "");
         setPostDescription(data.description || "");
@@ -121,7 +128,7 @@ export default function Home() {
     
     setIsGeneratingBanner(true);
     try {
-      const result = await generateBanneri2i(sourceMaterial, templateImage);
+      const result = await generateBanneri2i(sourceMaterial, templateImage, geminiApiKey);
       setGeneratedBanner(result);
       toast.success("Banner generated successfully!");
     } catch (e: any) {
@@ -262,20 +269,34 @@ export default function Home() {
           {currentView === 'login' && (
             <div className="max-w-xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="space-y-2 text-center">
-                <h2 className="text-2xl font-bold text-white">Connect to Subnano</h2>
-                <p className="text-zinc-400">Enter your personal Subnano Publishing API key to start creating and publishing right from this application.</p>
+                <h2 className="text-2xl font-bold text-white">Connect to Subnano & Gemini</h2>
+                <p className="text-zinc-400">Enter your personal Subnano Publishing API key and Gemini API key to start creating and publishing right from this application.</p>
               </div>
 
               <div className="p-6 bg-zinc-900/50 border border-pink-900/30 rounded-xl space-y-6 shadow-xl shadow-black">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-zinc-300 block">Subnano API Key</Label>
-                  <Input 
-                    type="password" 
-                    value={subnanoApiKey} 
-                    onChange={(e) => setSubnanoApiKey(e.target.value)} 
-                    className="bg-black border-zinc-800 text-pink-300 font-mono focus-visible:ring-pink-500"
-                    placeholder="snpk_..."
-                  />
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-zinc-300 block">Subnano API Key</Label>
+                    <Input 
+                      type="password" 
+                      value={subnanoApiKey} 
+                      onChange={(e) => setSubnanoApiKey(e.target.value)} 
+                      className="bg-black border-zinc-800 text-pink-300 font-mono focus-visible:ring-pink-500"
+                      placeholder="snpk_..."
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-zinc-300 block">Gemini API Key</Label>
+                    <Input 
+                      type="password" 
+                      value={geminiApiKey} 
+                      onChange={(e) => setGeminiApiKey(e.target.value)} 
+                      className="bg-black border-zinc-800 text-pink-300 font-mono focus-visible:ring-pink-500"
+                      placeholder="AIzaSy..."
+                    />
+                    <p className="text-xs text-zinc-500">Required to generate articles and variant banners. Get one at <a href="https://aistudio.google.com/app/apikey" target="_blank" className="text-pink-500 hover:underline">Google AI Studio</a>.</p>
+                  </div>
                 </div>
                 <Button onClick={handleSaveSettings} className="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold">
                   Save Credentials
